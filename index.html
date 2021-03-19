@@ -275,7 +275,7 @@
                 function broadcast_payloads(i) {
                     if (percentage_chance(config.payload_chance)) {
                         var new_payload = new Payload(
-                            Math.round(Math.random() * 100) / 100,
+                            Math.round(Math.random() * 1000) / 1000,
                             i,
                             new Date()
                         );
