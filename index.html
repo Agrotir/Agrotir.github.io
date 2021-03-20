@@ -31,6 +31,7 @@
                 type="button"
                 class="btn btn-success"
                 id="propose_invalid_block"
+                disabled="true"
             >
                 Propose Invalid Block
             </button>
@@ -38,6 +39,7 @@
                 type="button"
                 class="btn btn-success"
                 id="sign_invalid_block"
+                disabled="true"
             >
                 Sign Invalid Block
             </button>
@@ -45,6 +47,7 @@
                 type="button"
                 class="btn btn-success"
                 id="ignore_valid_block"
+                disabled="true"
             >
                 Ignore Valid Block
             </button>
@@ -58,8 +61,6 @@
             <script src="js/config.js"></script>
             <script src="js/bootstrap.bundle.min.js"></script>
             <script>
-                var is_running = false;
-
                 var timeout_id;
 
                 var current_client = -1;
@@ -134,6 +135,9 @@
 
                     if (current_client == -1) {
                         current_client = 0;
+                        $("#propose_invalid_block").attr("disabled", false);
+                        $("#sign_invalid_block").attr("disabled", false);
+                        $("#ignore_valid_block").attr("disabled", false);
                     }
 
                     $("#peerSelect").append(
@@ -178,7 +182,6 @@
                 });
 
                 $("#startElection").click(function () {
-                    is_running = true;
                     $("#addPeer").attr("disabled", true);
                     $("#startElection").attr("disabled", true);
                     $("#stopElection").attr("disabled", false);
@@ -188,7 +191,6 @@
                 });
 
                 $("#stopElection").click(function () {
-                    is_running = false;
                     $("#stopElection").attr("disabled", true);
                     $("#propose_invalid_block").attr("disabled", true);
                     $("#sign_invalid_block").attr("disabled", true);
@@ -201,15 +203,12 @@
 
                 function epoch_actions() {
                     //next epoch
+                    timeout_id= setTimeout(function () {
+                        epoch_actions();
+                    }, calculate_time_to_next_epoch());
 
-                    if (is_running) {
-                        timeout_id= setTimeout(function () {
-                            epoch_actions();
-                        }, calculate_time_to_next_epoch());
-
-                        for (var i = 0; i < global_client_list.length; i++) {
-                            broadcast_payloads(i);
-                        }
+                    for (var i = 0; i < global_client_list.length; i++) {
+                        broadcast_payloads(i);
                     }
 
                     var current_epoch_time = new Date();
