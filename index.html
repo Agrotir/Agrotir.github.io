@@ -246,7 +246,7 @@
                     if (leader.propose_invalid_block) {
                         payloads_to_propose.unshift(
                             new Payload(
-                                "fake:" + Math.random(),
+                                "fake:" + Math.round(Math.random() * 1000) / 1000,
                                 leader.id,
                                 new Date()
                             )
